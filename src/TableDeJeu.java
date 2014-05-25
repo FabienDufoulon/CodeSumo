@@ -85,14 +85,39 @@ public class TableDeJeu {
         // == Distances ==
     	for(int i = 0 ; i < nbPoints ; i++) {
     		List<Vertex> adjacentPoints = new ArrayList<Vertex>();
-    		for(int j = 0 ; j < nbPoints ; j++) {
-    			System.out.println("Edge ...");
-    			/*for the while, 4 cardinal points with /900, insert /800 if want to work with 8 directions*/
-    			if(Math.sqrt(Math.pow(point[i].getPoint().x-point[j].getPoint().x, 2) + Math.pow(point[i].getPoint().y-point[j].getPoint().y, 2)) < 10*tableWidth/800) {
-    				adjacentPoints.add(point[j]);
-    			}
-    		}
-    		
+		if (point[i].getPoint().x > 20){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x - 20, point[i].getPoint().y)]);
+		}
+
+		if (point[i].getPoint().x < 2980){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x + 20, point[i].getPoint().y)]);
+		}
+
+		if (point[i].getPoint().y > 20){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x , point[i].getPoint().y - 20)]);
+		}
+
+		if (point[i].getPoint().x < 1980){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x, point[i].getPoint().y + 20)]);
+		}
+
+		if (point[i].getPoint().x > 20 && point[i].getPoint().y > 20){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x - 20, point[i].getPoint().y - 20)]);
+		}
+
+		if (point[i].getPoint().x < 2980 && point[i].getPoint().y > 20 ){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x + 20, point[i].getPoint().y - 20)]);
+		}
+
+		if (point[i].getPoint().x < 2980 && point[i].getPoint().y < 1980){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x + 20, point[i].getPoint().y + 20)]);
+		}
+
+		if (point[i].getPoint().x > 20 && point[i].getPoint().y < 1980){
+			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x - 20, point[i].getPoint().y + 20)]);
+		}
+
+
     		int sizeConstant = adjacentPoints.size();
     		point[i].adjacencies = new Edge[sizeConstant];
     		if(adjacentPoints.size() == 0) {
