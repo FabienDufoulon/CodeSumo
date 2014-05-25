@@ -7,7 +7,7 @@ public class TestManager {
         System.out.println("done !");
         //tableDeJeu.test();
         
-        new Fenetre(tableDeJeu);
+        //new Fenetre(tableDeJeu);
     }
 } 
 

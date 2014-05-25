@@ -225,11 +225,6 @@ public class TableDeJeu {
     		y = 1100 - 160 - largeurRobot;
     	}  
     	
-    	System.out.println(this.point.length );
-    	System.out.println(this.getIndex(3000, 2000));
-    	
-    	
-    	int k = 0;
     	//Creation obstacles en JTS
     	//GeometryFactory fact = new GeometryFactory();
     	
