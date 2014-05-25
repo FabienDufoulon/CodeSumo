@@ -85,35 +85,35 @@ public class TableDeJeu {
         // == Distances ==
     	for(int i = 0 ; i < nbPoints ; i++) {
     		List<Vertex> adjacentPoints = new ArrayList<Vertex>();
-		if (point[i].getPoint().x > 20){
+		if (point[i].getPoint().x >= 20){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x - 20, point[i].getPoint().y)]);
 		}
 
-		if (point[i].getPoint().x < 2980){
+		if (point[i].getPoint().x <= 2980){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x + 20, point[i].getPoint().y)]);
 		}
 
-		if (point[i].getPoint().y > 20){
+		if (point[i].getPoint().y >= 20){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x , point[i].getPoint().y - 20)]);
 		}
 
-		if (point[i].getPoint().x < 1980){
+		if (point[i].getPoint().y <= 1980){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x, point[i].getPoint().y + 20)]);
 		}
 
-		if (point[i].getPoint().x > 20 && point[i].getPoint().y > 20){
+		if (point[i].getPoint().x >= 20 && point[i].getPoint().y >= 20){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x - 20, point[i].getPoint().y - 20)]);
 		}
 
-		if (point[i].getPoint().x < 2980 && point[i].getPoint().y > 20 ){
+		if (point[i].getPoint().x <= 2980 && point[i].getPoint().y >= 20 ){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x + 20, point[i].getPoint().y - 20)]);
 		}
 
-		if (point[i].getPoint().x < 2980 && point[i].getPoint().y < 1980){
+		if (point[i].getPoint().x <= 2980 && point[i].getPoint().y <= 1980){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x + 20, point[i].getPoint().y + 20)]);
 		}
 
-		if (point[i].getPoint().x > 20 && point[i].getPoint().y < 1980){
+		if (point[i].getPoint().x >= 20 && point[i].getPoint().y <= 1980){
 			adjacentPoints.add(point[this.getIndex(point[i].getPoint().x - 20, point[i].getPoint().y + 20)]);
 		}
 
@@ -146,7 +146,7 @@ public class TableDeJeu {
     	int y = 0;
     	while(x <= 1100+largeurRobot){
     		while(y <= 300+largeurRobot){
-    			this.obstacles.add(new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
@@ -157,7 +157,7 @@ public class TableDeJeu {
     	x = 1900 - largeurRobot;
     	while(x <= 2600+largeurRobot){
     		while(y <= 300+largeurRobot){
-    			this.obstacles.add( new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
@@ -169,7 +169,7 @@ public class TableDeJeu {
     	y = 2000-250-largeurRobot;
     	while(x <= 250+largeurRobot){
     		while(y <= 2000){
-    			this.obstacles.add( new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
@@ -181,23 +181,24 @@ public class TableDeJeu {
     	y = 2000-250-largeurRobot;
     	while(x <= 3000){
     		while(y <= 2000){
-    			this.obstacles.add( new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
     		y = 2000-250-largeurRobot;
     	}
     	
+    	
     	//rond centre
     	x = 1500 - 300 - largeurRobot;
-    	y = 1050-300-largeurRobot;
+    	y = 1050 - 300 - largeurRobot;
     	while(x <= 1500 + 300 + largeurRobot){
     		while(y <= 1050+300+largeurRobot){
-    			this.obstacles.add( new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
-    		y = 1050-300-largeurRobot;
+    		y = 1050 - 300 - largeurRobot;
     	}    	
     	
     	//premier foyer
@@ -205,7 +206,7 @@ public class TableDeJeu {
     	y = 1100 - 160 - largeurRobot;
     	while(x <= 900 + 160 + largeurRobot){
     		while(y <= 1100 + 160 + largeurRobot){
-    			this.obstacles.add( new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
@@ -217,15 +218,18 @@ public class TableDeJeu {
     	y = 1100 - 160 - largeurRobot;
     	while(x <= 2100 + 160 + largeurRobot){
     		while(y <= 1100 + 160 + largeurRobot){
-    			this.obstacles.add( new Point(x, y));
+    			this.obstacles.add(this.point[this.getIndex(x, y) ].getPoint());
     			y += 20;
     		}
     		x += 20;
     		y = 1100 - 160 - largeurRobot;
     	}  
     	
+    	System.out.println(this.point.length );
+    	System.out.println(this.getIndex(3000, 2000));
     	
     	
+    	int k = 0;
     	//Creation obstacles en JTS
     	//GeometryFactory fact = new GeometryFactory();
     	
@@ -296,7 +300,7 @@ public class TableDeJeu {
     }*/
     
     public List<Vertex> path(Vertex i, Vertex f) {
-        //Rﾃｩinitialistion des points
+        //Reinitialistion des points
         
         for(int index = 0 ; index < point.length ; index++) {
             if(point[index] != null) {
@@ -306,7 +310,7 @@ public class TableDeJeu {
             }
         }        
         
-        Dijkstra.computePaths(i, this.obstacles);
+        Dijkstra.computePaths(i, this.getObstacles() );
         
 	System.out.println("Distance to " + f + ": " + f.minDistance);
         List<Vertex> path = Dijkstra.getShortestPathTo(f);
@@ -331,7 +335,7 @@ public class TableDeJeu {
             if(e.target.equals(f))
             {
                 e.blocked = true;
-                System.out.println(i + " ==> " + f + " est bloquﾃｩ");
+                System.out.println(i + " ==> " + f + " est bloque");
             }
         }
         
@@ -340,7 +344,7 @@ public class TableDeJeu {
             if(e.target.equals(i))
             {
                 e.blocked = true;
-                System.out.println(f + " ==> " + i + " est bloquﾃｩ");
+                System.out.println(f + " ==> " + i + " est bloque");
             }
         }
     }
@@ -518,7 +522,7 @@ class Edge
 class Fenetre extends JFrame {
   public Fenetre(TableDeJeu tdj){               
     this.setTitle("Graphe");
-    this.setSize(800, 600); //800,600
+    this.setSize(820, 640); //800,600
     this.setLocationRelativeTo(null);              
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setContentPane(new Panneau(tdj));
@@ -590,17 +594,17 @@ class Panneau extends JPanel {
     //dessin du chemin
     g.setColor(Color.red);
     System.out.println(System.currentTimeMillis());
-    List<Vertex> path = this.tableDeJeu.getTest(this.tableDeJeu.getIndex(1500,20));
+    List<Vertex> path = this.tableDeJeu.getTest(this.tableDeJeu.getIndex(1500,1980));
     System.out.println(System.currentTimeMillis());
-    List<Point> path2 = this.tableDeJeu.getTest2(this.tableDeJeu.getIndex(1500,20));    
+    List<Point> path2 = this.tableDeJeu.getTest2(this.tableDeJeu.getIndex(1500,1980));    
     Vertex vinit = path.get(0);
     for (Vertex v : path){
     	g.drawLine((int) (v.getPoint().getX()*rapport1), (int) (v.getPoint().getY()*rapport2), 
     				(int) (vinit.getPoint().getX()*rapport1), (int) (vinit.getPoint().getY()*rapport2));
     	vinit = v;
     }
-    
    
+    
     for (Point v : path2){
     	if (v != null){
 	    	int x = (int) (v.getX()*rapport1);
@@ -609,10 +613,6 @@ class Panneau extends JPanel {
 	        g.fillOval(x-4, y-4, 8, 8);
     	}
     }
-    
-    g.setColor(Color.darkGray);
-    g.fillOval(-2, -2, 4, 4);    
-    g.fillOval((int) (3000*rapport1)-1, (int) (2000*rapport2)-1, 2, 2);      
     
     for (Point v : this.tableDeJeu.getObstacles()){
     	if (v != null){
@@ -623,5 +623,17 @@ class Panneau extends JPanel {
     	}
     }
     
+    Vertex vf = this.tableDeJeu.getVertex(2980, 1980);
+    for (Edge v : vf.adjacencies){
+    	if (v != null && v.target != null && !this.tableDeJeu.getObstacles().contains(v.target.getPoint())){
+	    	int x = (int) (v.target.getPoint().getX() *rapport1);
+	    	int y = (int) (v.target.getPoint().getY() *rapport2);
+	        g.setColor(Color.orange);
+	        g.fillOval(x-4, y-4, 8, 8);
+    	}
+    }
+    
+    System.out.println(this.tableDeJeu.getObstacles().contains(vf.getPoint()));
+    System.out.println(this.tableDeJeu.getObstacles().contains(this.tableDeJeu.getPosPoints()[this.tableDeJeu.getIndex(2980, 1980)]));
   }              
 }

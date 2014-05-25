@@ -3,11 +3,11 @@ public class TestManager {
     {
         TableDeJeu tableDeJeu = new TableDeJeu("droite");
         System.out.println("In process");
-	tableDeJeu.init();
-	System.out.println("done !");
+        tableDeJeu.init();
+        System.out.println("done !");
         //tableDeJeu.test();
         
-        //new Fenetre(tableDeJeu);
+        new Fenetre(tableDeJeu);
     }
 } 
 
