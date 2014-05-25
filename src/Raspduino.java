@@ -21,7 +21,7 @@ public class Raspduino {
 	boolean isRunning;
 
 	public Raspduino() {
-		ca = new CarteAsservissement("COM7");
+		ca = new CarteAsservissement("/dev/ttyS80");
 
 		Panel panel = new Panel(this);
 		new GUI(panel);
