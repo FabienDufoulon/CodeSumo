@@ -7,3 +7,4 @@ public class Bezier {
 	public double P3[] = new double[2];
 	
 }
+ 

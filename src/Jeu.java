@@ -1,6 +1,5 @@
-
 public class Jeu {
-
+ 
 	public static void main(String[] args)
     {
         TableDeJeu tableDeJeu = new TableDeJeu("droite");

@@ -13,7 +13,7 @@ public class Vertex implements Comparable<Vertex>
     public Vertex previous;
     
     public boolean ignore;
-    
+     
     private Point point;
     private double rot;
                 

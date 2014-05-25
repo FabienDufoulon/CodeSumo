@@ -7,19 +7,19 @@ public class CommandeBezier {
 	public static double thetam, v_ref; // orientation et vitesse courantes du robot	
 	private static double Mm[] = new double[2]; // position courante du robot
 	
-	// Points de contrôle de la coubre de Bezier
+	// Points de controle de la coubre de Bezier
 	private static double P0[] = new double[2];
 	private static double P1[] = new double[2];
 	private static double P2[] = new double[2];
 	private static double P3[] = new double[2];
 	
-	// Paramètres internes à la commande, fonction des valeurs précédentes
+	// Parametres internes ï¿½la commande, fonction des valeurs precedentes
 	public double t0;
 	public static double y, c0, g0, theta0;
 	
-	// Paramètres du PD (à tuner)
+	// Parametres du PD (ï¿½tuner)
 	public static int KP = 20;
-	public static int KV = 10; // Action dérivée
+	public static int KV = 10; // Action derivee
 	
 	
 	public void set_points(double pP0[], double pP1[], double pP2[], double pP3[]) {
@@ -44,16 +44,16 @@ public class CommandeBezier {
 	}
 	
 	/*
-	 * Calcule la commande à appliquer
+	 * Calcule la commande  a appliquer
 	 */
 	public double compute_wref() {
-		// Etape 1: mettre à jour (Mx,My,theta,v)
+		// Etape 1: mettre  a jour (Mx,My,theta,v)
 		// todo
 		
-		// Etape 2: en déduire t0
+		// Etape 2: en deduire t0
 		t0 = find_t0(Mm[0], Mm[1]);
 		
-		// Etape 3: calculer les paramètres
+		// Etape 3: calculer les parametres
 		compute_params();
 		
 		// Etape 4: calculer la commande w_ref
@@ -71,22 +71,22 @@ public class CommandeBezier {
 	
 	
 	/*
-	 * Calcule les paramètres liés à la courbe (y,c0,g0,theta0)
+	 * Calcule les parametres lire a  la courbe (y,c0,g0,theta0)
 	 */
 	private void compute_params() {
 		// c0: courbure en t0
 		c0 = courbure(t0);
 		
-		// g0: dérivée de c0 par rapport à l'abscisse curviligne, en t0
+		// g0: derivee de c0 par rapport a l'abscisse curviligne, en t0
 		double dt0 = 0.001;
 		double dc = courbure(t0+dt0) - courbure(t0);
 		double ds = dt0 * norm(dx(t0+dt0/2), dy(t0+dt0/2));
 		g0 = dc/ds;
 		
-		// theta0: angle par rapport à l'axe x de la trajectoire, en t0
+		// theta0: angle par rapport  a l'axe x de la trajectoire, en t0
 		theta0 = Math.atan2(dy(t0), dx(t0));
 		
-		// y: distance signée à la courbe
+		// y: distance signee a la courbe
 		y = dist(t0, Mm[0], Mm[1]);
 		if ( (Bx(t0)-Mm[0])*dy(t0)-(By(t0)-Mm[1])*dx(t0) < 0 )
 			y = -y;

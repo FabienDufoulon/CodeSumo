@@ -46,7 +46,7 @@ public class ArduinoManager implements SerialPortEventListener {
         
         //variables
         private Vector<ArduinoListener> listArduinoListener;
-        private String message_tmp;
+        private String message_tmp; 
 
 	public boolean initialize(String port) {
 		CommPortIdentifier portId = null;

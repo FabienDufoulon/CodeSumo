@@ -8,7 +8,7 @@ public class TestManager {
         
         //new Fenetre(tableDeJeu);
     }
-}
+} 
 
 /*QEI marchent. moteurs fonctionnent.
  * asserv : position

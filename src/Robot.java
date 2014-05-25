@@ -13,7 +13,7 @@ public class Robot {
     private static final long ChallengeDuration = 90 * 1000; //1min30
     private static ArduinoManager arduinoMoteurs;
     private static ArduinoManager arduinoCapteurs;
-    private double x, y;
+    private double x, y; 
     private double rot;
     private int valSonar;
     private long timeStart; //en secondes
@@ -42,8 +42,8 @@ public class Robot {
 
         distanceSonar = 70;
 		
-		//Listener liﾃｩ aux moteurs qui lit sur l'input des moteurs si on fait une rotation, un dﾃｩplacement,
-		// si on arrﾃｪte de se dﾃｩplacer et lit des donnﾃｩes du "sonar"
+		//Listener liee aux moteurs qui lit sur l'input des moteurs si on fait une rotation, un deplacement,
+		// si on arrete de se deplacer et lit des donnees du "sonar"
         arduinoMoteurs.addArduinoListener(new ArduinoListener() {
             @Override
             public void read(String msg) {
@@ -79,13 +79,13 @@ public class Robot {
             }
         });
 		
-		//Listener liﾃｩ aux capteurs qui lit sur l'input des capteurs la prﾃｩsence ou l'absence d'un
+		//Listener liee aux capteurs qui lit sur l'input des capteurs la presence ou l'absence d'un
 		// obstacle ou aussi la fin d'une action.
         arduinoCapteurs.addArduinoListener(new ArduinoListener() {
             @Override
             public void read(String msg) {
                 //System.out.println("Received C : " + msg);
-				//Robot.arduinoCapteurs.send("0") : Accusﾃｩ de Rﾃｩception
+				//Robot.arduinoCapteurs.send("0") : Accuse de Reception
                 if (msg.equals("OT")) //obstacle true
                 {
                     Robot.arduinoCapteurs.send("O");
@@ -106,14 +106,14 @@ public class Robot {
 
         System.out.println("Start !");
         arduinoMoteurs.send("Z");
-		//arduinoMoteurs.send("Z") : Rﾃｩinitialisation
+		//arduinoMoteurs.send("Z") : Reinitialisation
 
         this.start();
     }
 
 	//Ordonne les moteurs de s'activer
     public void start() {
-        arduinoMoteurs.send("ET"); //ET = Enable True : active l'ﾃｩnergie dans les moteurs
+        arduinoMoteurs.send("ET"); //ET = Enable True : active l'energie dans les moteurs
     }
 
     public void startTime() {
@@ -126,14 +126,14 @@ public class Robot {
         }
     }
 	
-	//Ordonne les moteurs de se dﾃｩsactiver
+	//Ordonne les moteurs de se desactiver
     public void end() {
-        arduinoMoteurs.send("EF"); //EF = Enable False : dﾃｩsactive l'ﾃｩnergie dans les moteurs
+        arduinoMoteurs.send("EF"); //EF = Enable False : desactive l'energie dans les moteurs
     }
 	
-	//Ordonne les moteurs d'arrﾃｪter le dﾃｩplacement
+	//Ordonne les moteurs d'arreter le deplacement
     public void block() {
-        arduinoMoteurs.send("DF"); //DF = Dﾃｩplacement False : arrﾃｪt du dﾃｩplacement
+        arduinoMoteurs.send("DF"); //DF = Deplacement False : arret du deplacement
     }
 
     public Vertex getPosAct() {
@@ -161,8 +161,8 @@ public class Robot {
         this.move(v, ignoreObstacle, angleDefini, "");
     }
 	
-	//Fonction qui dﾃｩplace le robot vers le Vertex v ﾃ�travers une rotation initiale, un dﾃｩplacement
-	// rectiligne, et une rotation possible ﾃ�la fin (avec des boolﾃｩens si l'angle de rotation est dﾃｩjﾃ�	// calculﾃｩ et si on lui dit d'ignorer les obstacles sur le chemin)
+	//Fonction qui deplace le robot vers le Vertex v a travers une rotation initiale, un deplacement
+	// rectiligne, et une rotation possible a la fin (avec des booleens si l'angle de rotation est deja 	// calcule et si on lui dit d'ignorer les obstacles sur le chemin)
     public void move(Vertex v, boolean ignoreObstacle, boolean angleDefini, String sens) throws Exception {
         endMove = false;
         rotation = false;
@@ -170,7 +170,7 @@ public class Robot {
 
         System.out.println(System.currentTimeMillis() - timeStart >= ChallengeDuration);
 
-        //[X,Y,T][+,-][xxxx] X et Y ﾃ�caster en int (pas de virgule) Theta en degrﾃｩs
+        //[X,Y,T][+,-][xxxx] X et Y a caster en int (pas de virgule) Theta en degres
 
         String X = "X" + adaptPos(v.getPoint().getX());
         System.out.println(X);
@@ -192,14 +192,14 @@ public class Robot {
         arduinoMoteurs.send(ROT);
 
         System.out.println("DT");
-        arduinoMoteurs.send("DT"); //DT = Dﾃｩplacement True : dﾃｩbut du dﾃｩplacement
+        arduinoMoteurs.send("DT"); //DT = Deplacement True : debut du deplacement
 
 
-        while (!rotation) //On attend le dﾃｩbut de la rotation
+        while (!rotation) //On attend le debut de la rotation
         {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Dﾃｩplacement False : Si la limite de temps est dﾃｩpassﾃｩe,
-                throw new Exception("time"); // arrﾃｪter les moteurs et renvoyer une exception "time"
+                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+                throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
             try {
@@ -208,14 +208,14 @@ public class Robot {
             }
         }
 		
-		//Le robot tourne pour prﾃｩparer le dﾃｩplacement
+		//Le robot tourne pour preparer le deplacement
         System.out.println("Rotation du robot");
 
         while (!deplacement) //On attend la fin de la rotation
         {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Dﾃｩplacement False : Si la limite de temps est dﾃｩpassﾃｩe,
-                throw new Exception("time"); // arrﾃｪter les moteurs et renvoyer une exception "time"
+                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+                throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
             try {
@@ -224,13 +224,13 @@ public class Robot {
             }
         }
 		
-		//Le robot se dﾃｩplace
+		//Le robot se deplace
         rotation = false;
 
         while (!rotation && (!obstacle || ignoreObstacle)) {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Dﾃｩplacement False : Si la limite de temps est dﾃｩpassﾃｩe,
-                throw new Exception("time"); // arrﾃｪter les moteurs et renvoyer une exception "time"
+                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+                throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
             try {
@@ -239,13 +239,13 @@ public class Robot {
             }
         }
 		
-		//Le robot arrﾃｪte de se dﾃｩplacer et tourne ﾃ�nouveau, si jamais il y a une action ﾃ�faire
+		//Le robot arrete de se deplacer et tourne a nouveau, si jamais il y a une action a faire
         deplacement = false;
 
         if (obstacle && !ignoreObstacle) {
             System.out.println("Oh non, un obstacle");
-            arduinoMoteurs.send("DF"); // DF = Dﾃｩplacement False : Si on a un obstacle et qu'on ne l'ignore pas,
-            throw new Exception("obstacle"); // arrﾃｪter les moteurs et renvoyer une exception "obstacle"
+            arduinoMoteurs.send("DF"); // DF = Deplacement False : Si on a un obstacle et qu'on ne l'ignore pas,
+            throw new Exception("obstacle"); // arreter les moteurs et renvoyer une exception "obstacle"
         }
 
         System.out.println("Rotation du robot");
@@ -253,8 +253,8 @@ public class Robot {
         while (!endMove) //On attend la fin du mouvement
         {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Dﾃｩplacement False : Si la limite de temps est dﾃｩpassﾃｩe,
-                throw new Exception("time"); // arrﾃｪter les moteurs et renvoyer une exception "time"
+                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+                throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
             try {
@@ -275,16 +275,16 @@ public class Robot {
 	
     public void retour() throws Exception {
         System.out.println("Retour");
-        move(vertexAct, true, false, ""); //VertexAct fait rﾃｩfﾃｩrence au dernier vertex en mﾃｩmoire
-		// On fait retour arriﾃｨre au dernier vertex en mﾃｩmoire, en ignorant les obstacles et en 
+        move(vertexAct, true, false, ""); //VertexAct fait reference au dernier vertex en memoire
+		// On fait retour arriere au dernier vertex en memoire, en ignorant les obstacles et en 
 		// recalculant l'angle de rotation.
     }
 	
-	//Fonction qui prend une position "flottante", et qui retourne une chaﾃｮne de caractﾃｨre composﾃｩe
-	// du signe et de 4 chiffres. (ex : "+0010" dﾃｩcimal)
+	//Fonction qui prend une position "flottante", et qui retourne une chaine de caractere composee
+	// du signe et de 4 chiffres. (ex : "+0010" decimal)
     private String adaptPos(double pos) {
         int intPos = (int) pos;
-        String X = String.format("%04d", Math.abs(intPos)); // Fonction qui formate la chaﾃｮne de caractﾃｨre
+        String X = String.format("%04d", Math.abs(intPos)); // Fonction qui formate la chaine de caractere
 															// pour qu'elle ait 4 chiffres
         if (pos >= 0) {
             X = "+" + X;
@@ -295,16 +295,16 @@ public class Robot {
         return X;
     }
 
-	//Fonction qui prend une angle "flottant", et qui retourne une chaﾃｮne de caractﾃｨre composﾃｩe
-	// du signe et de 4 chiffres, plus prﾃｩcisemment 3 chiffres qui dﾃｩnote la partie entiﾃｨre de l'angle
-	// et 1 chiffre pour le premier chiffre aprﾃｨs la virgule (ex : "+3251" degrﾃｩs)
+	//Fonction qui prend une angle "flottant", et qui retourne une chaine de caractere composee
+	// du signe et de 4 chiffres, plus precisemment 3 chiffres qui denote la partie entiere de l'angle
+	// et 1 chiffre pour le premier chiffre apres la virgule (ex : "+3251" degres)
     private String adaptRot(double rot) {
         int intRotEntier = (int) rot;
-        int intRotDecimale = (int) ((rot % 1) * 10); // prend le premier chiffre aprﾃｨs la virgule
+        int intRotDecimale = (int) ((rot % 1) * 10); // prend le premier chiffre apres la virgule
         String stringRotEntier = String.format("%03d", Math.abs(intRotEntier)); 
-		// Fonction qui formate la chaﾃｮne de caractﾃｨre pour qu'elle ait 3 chiffres
+		// Fonction qui formate la chaine de caractere pour qu'elle ait 3 chiffres
         String stringRotDecimale = Integer.toString(Math.abs(intRotDecimale));
-		// Fonction qui change le premier chiffre aprﾃｨs la virgule ﾃ�une chaﾃｮne de caractﾃｨre
+		// Fonction qui change le premier chiffre apres la virgule a une chaine de caractere
         String stringRot;
 
         if (rot >= 0) {
@@ -316,7 +316,7 @@ public class Robot {
         return stringRot;
     }
 	
-	//Fonction qui beep le sonar pour qu'il lui renvoie la distance ﾃ�travers le listener et qui la renvoie
+	//Fonction qui beep le sonar pour qu'il lui renvoie la distance a travers le listener et qui la renvoie
     public int getDist() {
         valSonar = Integer.MAX_VALUE;
         arduinoMoteurs.send("S");
@@ -333,8 +333,8 @@ public class Robot {
         return valSonar;
     }
 	
-	//Fonction qui envoie les coordonnﾃｩes x et y aux moteurs , plus prﾃｩcisemment des chaﾃｮnes de caractﾃｨre
-	// avec "PX" ou "PY" avec la chaﾃｮne de position concatﾃｩnﾃｩe (ex : PX+0010)
+	//Fonction qui envoie les coordonnees x et y aux moteurs , plus precisemment des chaines de caractere
+	// avec "PX" ou "PY" avec la chaine de position concatenee (ex : PX+0010)
     public void setPos(int x, int y) {
         System.out.println("PX" + this.adaptPos(x));
         arduinoMoteurs.send("PX" + this.adaptPos(x));
@@ -342,8 +342,8 @@ public class Robot {
         arduinoMoteurs.send("PY" + this.adaptPos(y));
     }
 
-	//Fonction qui envoie l'angle de rotation aux moteurs, plus prﾃｩcisemment des chaﾃｮnes de caractﾃｨre
-	// avec "PX" ou "PY" avec la chaﾃｮne de l'angle concatﾃｩnﾃｩe (ex : PT+3212)
+	//Fonction qui envoie l'angle de rotation aux moteurs, plus precisemment des chaines de caractere
+	// avec "PX" ou "PY" avec la chaine de l'angle concatenee (ex : PT+3212)
     public void setRot(double rot) {
         System.out.println("PT" + this.adaptRot(rot));
         arduinoMoteurs.send("PT" + this.adaptRot(rot));	//Mort aux PTs !! (Fafnir -> pour Borrits)

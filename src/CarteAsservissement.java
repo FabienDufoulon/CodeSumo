@@ -12,7 +12,7 @@ public class CarteAsservissement {
 	ArduinoManager carte;
 
 	FileWriter logFile;
-	BufferedWriter log;
+	BufferedWriter log; 
 
 	public double v, w;
 

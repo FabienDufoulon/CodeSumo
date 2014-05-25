@@ -383,7 +383,7 @@ public class TableDeJeu {
         //this.setBlocked(point[3], point[4]);
         
     }
-    
+     
     public List<Point> getTest2(int i) {
         //Chemins 
         return this.convertIntoSegments(this.convertPath(this.path(point[0], point[i])));

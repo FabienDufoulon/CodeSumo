@@ -6,7 +6,7 @@ public enum Commande {
 
     ARRET_URGENCE(0x06),
 
-
+ 
             // Asservissement
     ASSERVISSEMENT_POSITION_X(0X07),
     ASSERVISSEMENT_POSITION_Y(0X08),
@@ -16,7 +16,7 @@ public enum Commande {
     ASSERVISSEMENT_POSITION_OK(0x0C),
     ASSERVISSEMENT_VITESSE_OK(0x0D),
 
-            // Odométrie
+            // Odometrie
     RESET_ODOMETRIE(0x20),
     PRINT_ODOMETRIE(0x21),
     ODOMETRIE_X(0x22),

@@ -13,7 +13,7 @@ public class Trajectoire {
 	{
 		this.tablBezier = new LinkedList<Bezier>();
 		
-		commande = new CommandeBezier();
+		commande = new CommandeBezier(); 
 	}
 	
 	void addBezier(double pP0[], double pP1[], double pP2[], double pP3[]) 

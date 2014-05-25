@@ -84,7 +84,7 @@ public class Raspduino {
 
 	public void stopFollowing() {
 		isRunning = false;
-	}
+	} 
 
 	/**
 	 * @param args
