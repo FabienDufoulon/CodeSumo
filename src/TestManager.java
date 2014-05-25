@@ -1,10 +1,11 @@
-
 public class TestManager {
     public static void main(String[] args)
     {
         TableDeJeu tableDeJeu = new TableDeJeu("droite");
-        tableDeJeu.init();
-        tableDeJeu.test();
+        System.out.println("In process");
+	tableDeJeu.init();
+	System.out.println("done !");
+        //tableDeJeu.test();
         
         //new Fenetre(tableDeJeu);
     }

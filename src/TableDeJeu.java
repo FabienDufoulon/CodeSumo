@@ -68,10 +68,16 @@ public class TableDeJeu {
     		}
     	}
 
-        
+        System.out.println("Point init done !");
+
         initEdges();
+
+	System.out.println("Edge init done !");
+
         initObstacles();
-        
+
+	System.out.println("Obstacles init done!");
+
         return point[0];
     }
     
@@ -80,7 +86,7 @@ public class TableDeJeu {
     	for(int i = 0 ; i < nbPoints ; i++) {
     		List<Vertex> adjacentPoints = new ArrayList<Vertex>();
     		for(int j = 0 ; j < nbPoints ; j++) {
-    				
+    			System.out.println("Edge ...");
     			/*for the while, 4 cardinal points with /900, insert /800 if want to work with 8 directions*/
     			if(Math.sqrt(Math.pow(point[i].getPoint().x-point[j].getPoint().x, 2) + Math.pow(point[i].getPoint().y-point[j].getPoint().y, 2)) < 10*tableWidth/800) {
     				adjacentPoints.add(point[j]);
@@ -196,10 +202,10 @@ public class TableDeJeu {
     	
     	
     	//Creation obstacles en JTS
-    	GeometryFactory fact = new GeometryFactory();
+    	//GeometryFactory fact = new GeometryFactory();
     	
     	//semi - octogones
-    	Coordinate[] coordinates = new Coordinate[] {
+    	/*Coordinate[] coordinates = new Coordinate[] {
         		new Coordinate(400 - largeurRobot,0), new Coordinate(400 - largeurRobot,300), 
         		new Coordinate(400+(1100-400+2*largeurRobot)/4,300+largeurRobot), 
         		new Coordinate(400+3*(1100-400+2*largeurRobot)/4,300+largeurRobot), 
@@ -218,10 +224,10 @@ public class TableDeJeu {
         	};   
         LinearRing linear2 = fact.createLinearRing(coordinates2);
         polygons.add(new Polygon(linear2, null, fact));    
-
-    	Coordinate[] coordinates3 = new Coordinate[] {
-        		new Coordinate(0,2000), new Coordinate(250 + largeurRobot,2000), 
-        		/*new Coordinate(250 + largeurRobot,250+largeurRobot),*/ new Coordinate(0,250+largeurRobot),
+*/
+  //  	Coordinate[] coordinates3 = new Coordinate[] {
+    //    		new Coordinate(0,2000), new Coordinate(250 + largeurRobot,2000), 
+        		/*new Coordinate(250 + largeurRobot,250+largeurRobot),*/ /*new Coordinate(0,250+largeurRobot),
         		new Coordinate(0,2000)
         	};   
         LinearRing linear3 = fact.createLinearRing(coordinates3);
@@ -229,7 +235,7 @@ public class TableDeJeu {
 
     	Coordinate[] coordinates4 = new Coordinate[] {
         		new Coordinate(2750-largeurRobot,2000), new Coordinate(3000,2000), 
-        		/*new Coordinate(250 + largeurRobot,250+largeurRobot),*/ new Coordinate(3000,1750-largeurRobot),
+        		/*new Coordinate(250 + largeurRobot,250+largeurRobot),*/ /*new Coordinate(3000,1750-largeurRobot),
         		new Coordinate(2750-largeurRobot,2000)
         	};    	
         LinearRing linear4 = fact.createLinearRing(coordinates4);
@@ -253,16 +259,16 @@ public class TableDeJeu {
         	};    	
         LinearRing linear7 = fact.createLinearRing(coordinates7);
         polygons.add(new Polygon(linear7, null, fact));  
-        
+      */
     }
     
-    public boolean validation(){
+    /*public boolean validation(){
         for (Polygon poly : this.polygons){
         	if (true) return false;
         }
         
         return true;
-    }
+    }*/
     
     public List<Vertex> path(Vertex i, Vertex f) {
         //Rﾃｩinitialistion des points
