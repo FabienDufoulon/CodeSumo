@@ -1,5 +1,8 @@
+import java.io.DataInputStream;
+import java.io.IOException;
+
 public class TestManager {
-    public static void main(String[] args)
+    public static void main(String[] args) throws IOException
     {
         TableDeJeu tableDeJeu = new TableDeJeu("droite");
         System.out.println("In process");
@@ -8,6 +11,16 @@ public class TestManager {
         //tableDeJeu.test();
         
         //new Fenetre(tableDeJeu);
+    	/*while (true){
+	    	DataInputStream in=new DataInputStream(System.in);
+	    	char ch= (char) System.in.read();
+	    	if (Character.isWhitespace(ch)) {
+				System.out.println("null char");
+	    	} 
+	    	else {System.out.println("Char : " +ch );  
+	    			System.out.println(" "); }
+    	}*/
+
     }
 } 
 

@@ -1,3 +1,7 @@
+import java.awt.Polygon;
+import java.awt.event.KeyEvent;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,11 +24,14 @@ public class Raspduino {
 
 	boolean isRunning;
 
-	public Raspduino() {
+	public Raspduino() throws IOException {
 		ca = new CarteAsservissement("/dev/ttyS80");
 
-		Panel panel = new Panel(this);
-		new GUI(panel);
+		/*Panel panel = new Panel(this);
+		new GUI(panel);*/
+		
+		MyThread thread = new MyThread(this){
+		};
 
 		timer = new Timer(true);
 
@@ -53,7 +60,7 @@ public class Raspduino {
 			};
 		};
 		timer.scheduleAtFixedRate(tt, 0, 200);
-
+		
 	}
 
 	public void followBezier() {
@@ -89,8 +96,77 @@ public class Raspduino {
 	/**
 	 * @param args
 	 *            the command line arguments
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		new Raspduino();
 	}
 }
+
+class MyThread implements Runnable {
+	Raspduino rasp;
+
+	   public MyThread(Raspduino raspd) {
+	      this.rasp = raspd;
+	   }
+
+	   public void run() {
+	    	DataInputStream in = new DataInputStream(System.in);
+	    	char ch = ' ';
+			try {
+				ch = (char) System.in.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	if (Character.isWhitespace(ch)) {
+				System.out.println("");
+	    	} 
+	    	
+			rasp.stopFollowing();
+			 
+			float v=0;
+			float w=0;
+	    	
+			switch(ch)
+			{
+			case 'L': //left
+				w = (float) -1.0;
+				break;
+			case 'R': //right
+				w = (float) 1.0;
+				break;
+			case 'U': //up
+				v = (float) 0.3;
+				break;
+			case 'D': //down
+				v = (float) -0.3;
+				break;
+			case 'S': //Reset
+				this.rasp.ca.reset();
+				break;
+			case 'T': //T
+				rasp.followBezier();
+				break;
+
+			case 'P': //P
+				rasp.commande.commande.KP += 5;
+				System.out.println("----------------------------------------- KP = " + rasp.commande.commande.KP);
+				break;
+			case 'M': //M
+				rasp.commande.commande.KP -= 5;
+				System.out.println("----------------------------------------- KP = " + rasp.commande.commande.KP);
+				break;
+
+			case 'O': //O
+				rasp.commande.commande.KV += 5;
+				System.out.println("----------------------------------------- KV = " + rasp.commande.commande.KV);
+				break;
+			case 'K': //K
+				rasp.commande.commande.KV -= 5;
+				System.out.println("----------------------------------------- KV = " + rasp.commande.commande.KV);
+				break;
+			}
+			this.rasp.ca.setAsservissementVitesse(v, w);
+	   }
+	}
