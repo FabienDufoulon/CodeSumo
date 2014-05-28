@@ -80,16 +80,15 @@ public class CarteAsservissement {
 		carte.send("O");
 	}
 	
+	public void setAsservissementPosition(float l, float t) {
+		carte.send("L" + String.format(Locale.ENGLISH, "%.3f", l));
+		carte.send("T" + String.format(Locale.ENGLISH, "%.3f", t));
+		carte.send("o");
+	}
+	
 	public void stop()
 	{
 		this.setAsservissementVitesse((float)0.0,  (float)0.0);
-	}
-
-	public void setAsservissementPosition(float x, float y, float theta) {
-		sendCommande(Commande.ASSERVISSEMENT_POSITION_X, x);
-		sendCommande(Commande.ASSERVISSEMENT_POSITION_Y, y);
-		sendCommande(Commande.ASSERVISSEMENT_POSITION_THETA, theta);
-		sendCommande(Commande.ASSERVISSEMENT_POSITION_OK, 0);
 	}
 
 	public void setPosition(float x, float y, float theta) {

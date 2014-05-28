@@ -1,11 +1,23 @@
 public class Jeu {
  
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
     {
-        TableDeJeu tableDeJeu = new TableDeJeu("droite");
+        TableDeJeu tableDeJeu = new TableDeJeu();
         tableDeJeu.init();
         
-        //Robot robot = new Robot(new ArduinoManager(), new ArduinoManager(), tableDeJeu.getVertex(40, 80));
+        String couleur = args[0];
+        CarteAsservissement carteAsservissement = new CarteAsservissement("/dev/ttyAMA0");
+        ArduinoManager arduinoServos = null;
+        ArduinoManager arduinoCapteurs = null;
+        Robot robot = new Robot(arduinoServos, arduinoCapteurs, carteAsservissement, tableDeJeu.getVertex(40, 80));
+        robot.setRot((float) -Math.PI);
+        
+        //homologation
+        if (couleur == "jaune"){
+        	robot.moveLin(tableDeJeu.getVertex(2600, 1100), false); 
+        }else{
+        	robot.moveLin(tableDeJeu.getVertex(400, 1100), false);             	
+        }        
         
         // premier feu cote mur
         if (/*couleur robot jaune*/ true){

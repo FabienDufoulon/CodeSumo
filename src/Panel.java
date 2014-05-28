@@ -157,6 +157,38 @@ public class Panel extends JPanel implements ActionListener, KeyListener{
 			this.trajectoire = new Polygon();
 			break;
 			
+		case KeyEvent.VK_G:
+			rasp.ca.setAsservissementPosition((float) 0., (float) (2. * Math.PI)); 
+			break;
+		case KeyEvent.VK_H:
+			rasp.ca.setAsservissementPosition((float) 0., (float) (-2. * Math.PI)); 
+			break;
+		case KeyEvent.VK_Y:
+			rasp.ca.setAsservissementPosition((float) 0.5, (float) 0.); 
+			break;
+		case KeyEvent.VK_U:
+			rasp.ca.setAsservissementPosition((float) -0.5, (float) 0.); 
+			break;
+		case KeyEvent.VK_J:
+			rasp.ca.setAsservissementPosition((float) 0.25, (float) Math.PI); 
+			break;
+		case KeyEvent.VK_K:
+			rasp.ca.setAsservissementPosition((float) -0.25, (float) Math.PI); 
+			break;
+		case KeyEvent.VK_B:
+			rasp.ca.setAsservissementPosition((float) 0.25, (float) -Math.PI); 
+			break;
+		case KeyEvent.VK_N:
+			rasp.ca.setAsservissementPosition((float) -0.25, (float) -Math.PI); 
+			break;
+		case KeyEvent.VK_S:
+			ca.setAsservissementPosition((float)0.0, (float)0.0);
+			break;
+		case KeyEvent.VK_HOME:
+			rasp.p = new Position((float)0.0,(float)0.0,(float)0.0);
+			rasp.asservType = TypeAsservissement.ASSRV_POSITION;
+			break;	
+			
 		}
 		
 		ca.setAsservissementVitesse(v, w);

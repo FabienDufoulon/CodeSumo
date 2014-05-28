@@ -1,81 +1,49 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author root
- */
 public class Robot {
 
     private Vertex vertexAct;
     private static final long ChallengeDuration = 90 * 1000; //1min30
-    private static ArduinoManager arduinoMoteurs;
+    
+    private static ArduinoManager arduinoServos;
     private static ArduinoManager arduinoCapteurs;
-    private double x, y; 
-    private double rot;
-    private int valSonar;
+    private static CarteAsservissement carteAsservissement;
+    
+    private float x, y; 
+    private float rot;
     private long timeStart; //en secondes
+    
     //messages
-    private boolean endMove;
     private boolean obstacle;
-    private boolean rotation;
     private boolean deplacement;
     private boolean endAction;
-    private int distanceSonar;
-
-    public Robot(ArduinoManager arduinoMoteurs, ArduinoManager arduinoCapteurs, Vertex premierVertex) {
+	
+	
+	
+    public Robot(ArduinoManager arduinoServosA, ArduinoManager arduinoCapteursA, CarteAsservissement carteAsservissementA, Vertex premierVertex) {
 
         vertexAct = premierVertex;
 
         //initialisation des variables;
-        endMove = false;
         obstacle = false;
-        rotation = false;
-        deplacement = false;
         endAction = false;
-
+        deplacement = false;
+        
         //Initialisation de la arduino
-        this.arduinoMoteurs = arduinoMoteurs;
-        this.arduinoCapteurs = arduinoCapteurs;
-
-        distanceSonar = 70;
-		
+        arduinoServos = arduinoServosA;
+        arduinoCapteurs = arduinoCapteursA;
+        carteAsservissement = carteAsservissementA;
+       		
 		//Listener liee aux moteurs qui lit sur l'input des moteurs si on fait une rotation, un deplacement,
 		// si on arrete de se deplacer et lit des donnees du "sonar"
-        arduinoMoteurs.addArduinoListener(new ArduinoListener() {
+        arduinoServos.addArduinoListener(new ArduinoListener() {
             @Override
             public void read(String msg) {
                 //System.out.println("Received M : " + msg);
-
-                if (msg.equals("FinDeplacement")) //fin du mouvement
+                if (msg.equals("F")) //fin de l'action
                 {
-                    System.out.println("fin de mouvement !");
-                    endMove = true;
-                } else if (msg.equals("rotation")) {
-                    System.out.println("rotation !");
-                    rotation = true;
-                } else if (msg.equals("deplacement")) {
-                    System.out.println("deplacement !");
-                    deplacement = true;
-                } else if (msg.charAt(0) == 'S') {
-                    System.out.println("msg = " + msg);
-                    System.out.println("update du sonar");
-                    System.out.println(msg.substring(1));
-                    valSonar = Integer.parseInt(msg.substring(1));
-                    System.out.println("valSonar = " + valSonar);
-                } else if (msg.length() > 12) {
-                    try {
-                        String coordonnees[] = msg.split("\t");
-                        x = Double.parseDouble(coordonnees[0]);
-                        y = Double.parseDouble(coordonnees[1]);
-                        rot = Double.parseDouble(coordonnees[2]) * 360 / 3.14;
-                        //System.out.println("X = " + x + ", Y = " + y + ", rot = " + rot);
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                }
+                    System.out.println("fin de l'action !");
+                    endAction = true;
+                } 
             }
         });
 		
@@ -85,37 +53,34 @@ public class Robot {
             @Override
             public void read(String msg) {
                 //System.out.println("Received C : " + msg);
-				//Robot.arduinoCapteurs.send("0") : Accuse de Reception
-                if (msg.equals("OT")) //obstacle true
-                {
-                    Robot.arduinoCapteurs.send("O");
-                    System.out.println("obstacle = true");
-                    obstacle = true;
-                } else if (msg.equals("OF")) //obstacle false
-                {
-                    Robot.arduinoCapteurs.send("O");
-                    System.out.println("obstacle = false");
-                    obstacle = false;
-                } else if (msg.equals("finAction")) {
-                    Robot.arduinoCapteurs.send("O");
-                    System.out.println("fin de l'action");
-                    endAction = true;
+                try {
+                	obstacle = false;
+                    String Scoordonnees[] = msg.split("cm");
+                    int[] coordonnees = new int[4];
+                    for (int i = 0; i < 4; i++){
+                    	coordonnees[i] = Integer.parseInt(Scoordonnees[i]);
+                    	if (coordonnees[i] < 15 && deplacement){
+                    		obstacle = true;
+                    	}
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
+
             }
         });
 
         System.out.println("Start !");
-        arduinoMoteurs.send("Z");
-		//arduinoMoteurs.send("Z") : Reinitialisation
+        carteAsservissement.reset();
 
         this.start();
-    }
-
+    }	
+    
 	//Ordonne les moteurs de s'activer
     public void start() {
-        arduinoMoteurs.send("ET"); //ET = Enable True : active l'energie dans les moteurs
+        carteAsservissement.enableMotors(true); //active l'energie dans les moteurs
     }
-
+    
     public void startTime() {
         timeStart = System.currentTimeMillis();
 
@@ -125,17 +90,17 @@ public class Robot {
             e.printStackTrace();
         }
     }
-	
+    
 	//Ordonne les moteurs de se desactiver
     public void end() {
-        arduinoMoteurs.send("EF"); //EF = Enable False : desactive l'energie dans les moteurs
+        carteAsservissement.enableMotors(false); ; // desactive l'energie dans les moteurs
     }
 	
 	//Ordonne les moteurs d'arreter le deplacement
     public void block() {
-        arduinoMoteurs.send("DF"); //DF = Deplacement False : arret du deplacement
+        carteAsservissement.stop(); //arret du deplacement
     }
-
+    
     public Vertex getPosAct() {
         return vertexAct;
     }
@@ -151,16 +116,148 @@ public class Robot {
     public double getRot() {
         return rot;
     }
-    /*
-     public void move(Vertex v) throws Exception {
-     this.move(v, false, true);
-     }
-     */
-
-    public void move(Vertex v, boolean ignoreObstacle, boolean angleDefini) throws Exception {
-        this.move(v, ignoreObstacle, angleDefini, "");
+    
+    //used at init
+    public double setRot(float rot) {
+        return this.rot = rot;
+    }
+    
+    public void move(Vertex v, boolean ignoreObstacle) throws Exception {
+        this.moveLin(v, ignoreObstacle);
     }
 	
+    
+    
+    public void moveLin(Vertex v, boolean ignoreObstacle) throws Exception {
+    	while (!endAction){
+    		Thread.sleep(200);
+    	}
+    	deplacement = true;    	
+    	
+    	System.out.println(System.currentTimeMillis() - timeStart >= ChallengeDuration);
+    	
+    	carteAsservissement.setAsservissementPosition(distance(this.vertexAct, v), angle(this.vertexAct, v) - rot);
+    	
+    	while (obstacle){
+        	this.block();   		
+    	}
+    	
+    	//envoyer deux fois à la chaine à la carte d'asservissement est ce mauvais?
+
+    	carteAsservissement.setAsservissementPosition(distance(this.vertexAct, v), angle(this.vertexAct, v) - rot);  
+    	
+    	//à modifier... ici ne finit jamais la fonction jusqu'à la fin du jeu.
+        while (!obstacle || ignoreObstacle ) {
+            if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
+            	carteAsservissement.stop(); // Si la limite de temps est depassee,
+                throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+            }
+        }
+    	
+       /* while (!obstacle || ignoreObstacle) {
+			float l,t;
+			l = (float) Math.sqrt(Math.pow(carteAsservissement.x - p.x, 2.0) + Math.pow(carteAsservissement.y - p.y, 2.0));
+			t = -(float) (carteAsservissement.t - Math.atan2(p.y - carteAsservissement.y, p.x - carteAsservissement.x));
+			
+			if(l<0.01)
+			{
+				carteAsservissement.stop();
+				System.out.println("POUEEEEET l = " + l);
+				break;
+			}
+			else
+				carteAsservissement.setAsservissementPosition(l, t);
+		}
+		
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+    	
+    	this.vertexAct = v;
+    	deplacement = false;
+    }
+    
+    public float distance(Vertex prev, Vertex next) {
+    	return (float) Math.sqrt(Math.pow(next.getPoint().getX() - prev.getPoint().getX(), 2)
+    					+ Math.pow(next.getPoint().getY() - prev.getPoint().getY(), 2));
+    }
+    
+    public float angle(Vertex prev, Vertex next) {
+    	return (float) ((next.getPoint().getX() - prev.getPoint().getX())/distance(prev, next));
+    }
+    
+    public void faireAction(String action){
+    	endAction = false;
+    	switch (action){
+    	//choix à faire entre actions bas level et actions haut level
+    		case "lowerLift" :
+    			arduinoServos.send("s");
+    			break;
+
+    		case "raiseLift" :
+    			arduinoServos.send("t");
+    			break;
+    			
+    		case "pumpOn" :
+    			arduinoServos.send("p");
+    			break;
+
+    		case "pumpOff" :
+    			arduinoServos.send("q");
+    			break;
+    			
+    		case "valveOn" :
+    			arduinoServos.send("e");
+    			break;
+    			
+    		case "valveOff" :
+    			arduinoServos.send("f");
+    			break;
+    			
+    		case "rotateTigeBack" :
+    			arduinoServos.send("c");
+    			break;
+    			
+    		case "rotateTigeReady" :
+    			arduinoServos.send("d");
+    			break;
+    			
+    		case "rotateTigeVertBack" :
+    			arduinoServos.send("w");
+    			break;
+    			
+    		case "rotateTigeVertReady" :
+    			arduinoServos.send("x");
+    			break;
+    		
+    		case "powerLifter" :
+    			arduinoServos.send("a");
+    			break;  
+    			
+    		case "releaseLifter" :
+    			arduinoServos.send("b");
+    			break;    			
+    	}
+    	
+    	while (!endAction){
+    		try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}    		
+    }
+    
+    /*
 	//Fonction qui deplace le robot vers le Vertex v a travers une rotation initiale, un deplacement
 	// rectiligne, et une rotation possible a la fin (avec des booleens si l'angle de rotation est deja 	// calcule et si on lui dit d'ignorer les obstacles sur le chemin)
     public void move(Vertex v, boolean ignoreObstacle, boolean angleDefini, String sens) throws Exception {
@@ -198,7 +295,7 @@ public class Robot {
         while (!rotation) //On attend le debut de la rotation
         {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+            	carteAsservissement.stop(); // Si la limite de temps est depassee,
                 throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
@@ -214,7 +311,7 @@ public class Robot {
         while (!deplacement) //On attend la fin de la rotation
         {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+            	carteAsservissement.stop(); // Si la limite de temps est depassee,
                 throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
@@ -229,7 +326,7 @@ public class Robot {
 
         while (!rotation && (!obstacle || ignoreObstacle)) {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+            	carteAsservissement.stop(); // Si la limite de temps est depassee,
                 throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
@@ -244,8 +341,10 @@ public class Robot {
 
         if (obstacle && !ignoreObstacle) {
             System.out.println("Oh non, un obstacle");
-            arduinoMoteurs.send("DF"); // DF = Deplacement False : Si on a un obstacle et qu'on ne l'ignore pas,
+            carteAsservissement.stop(); // Si on a un obstacle et qu'on ne l'ignore pas,
             throw new Exception("obstacle"); // arreter les moteurs et renvoyer une exception "obstacle"
+            
+            //à tester évasion et non simplement arrêt
         }
 
         System.out.println("Rotation du robot");
@@ -253,7 +352,7 @@ public class Robot {
         while (!endMove) //On attend la fin du mouvement
         {
             if (System.currentTimeMillis() - timeStart >= ChallengeDuration) {
-                arduinoMoteurs.send("DF"); // DF = Deplacement False : Si la limite de temps est depassee,
+                carteAsservissement.stop(); // Si la limite de temps est depassee,
                 throw new Exception("time"); // arreter les moteurs et renvoyer une exception "time"
             }
 
@@ -268,88 +367,17 @@ public class Robot {
          try {
          Thread.sleep(500);
          } catch(Exception e) {}
-         */
+         
         vertexAct = v;
-    }
+    }*/
 	
 	
     public void retour() throws Exception {
         System.out.println("Retour");
-        move(vertexAct, true, false, ""); //VertexAct fait reference au dernier vertex en memoire
+        moveLin(vertexAct, true); //VertexAct fait reference au dernier vertex en memoire
 		// On fait retour arriere au dernier vertex en memoire, en ignorant les obstacles et en 
 		// recalculant l'angle de rotation.
     }
 	
-	//Fonction qui prend une position "flottante", et qui retourne une chaine de caractere composee
-	// du signe et de 4 chiffres. (ex : "+0010" decimal)
-    private String adaptPos(double pos) {
-        int intPos = (int) pos;
-        String X = String.format("%04d", Math.abs(intPos)); // Fonction qui formate la chaine de caractere
-															// pour qu'elle ait 4 chiffres
-        if (pos >= 0) {
-            X = "+" + X;
-        } else {
-            X = "-" + X;
-        }
-
-        return X;
-    }
-
-	//Fonction qui prend une angle "flottant", et qui retourne une chaine de caractere composee
-	// du signe et de 4 chiffres, plus precisemment 3 chiffres qui denote la partie entiere de l'angle
-	// et 1 chiffre pour le premier chiffre apres la virgule (ex : "+3251" degres)
-    private String adaptRot(double rot) {
-        int intRotEntier = (int) rot;
-        int intRotDecimale = (int) ((rot % 1) * 10); // prend le premier chiffre apres la virgule
-        String stringRotEntier = String.format("%03d", Math.abs(intRotEntier)); 
-		// Fonction qui formate la chaine de caractere pour qu'elle ait 3 chiffres
-        String stringRotDecimale = Integer.toString(Math.abs(intRotDecimale));
-		// Fonction qui change le premier chiffre apres la virgule a une chaine de caractere
-        String stringRot;
-
-        if (rot >= 0) {
-            stringRot = "+" + stringRotEntier + stringRotDecimale;
-        } else {
-            stringRot = "-" + stringRotEntier + stringRotDecimale;
-        }
-
-        return stringRot;
-    }
 	
-	//Fonction qui beep le sonar pour qu'il lui renvoie la distance a travers le listener et qui la renvoie
-    public int getDist() {
-        valSonar = Integer.MAX_VALUE;
-        arduinoMoteurs.send("S");
-
-        while (valSonar == Integer.MAX_VALUE) {
-            try {
-                Thread.sleep(10);
-            } catch (Exception e) {
-            }
-        }
-
-        System.out.println("getDist() = " + valSonar);
-
-        return valSonar;
-    }
-	
-	//Fonction qui envoie les coordonnees x et y aux moteurs , plus precisemment des chaines de caractere
-	// avec "PX" ou "PY" avec la chaine de position concatenee (ex : PX+0010)
-    public void setPos(int x, int y) {
-        System.out.println("PX" + this.adaptPos(x));
-        arduinoMoteurs.send("PX" + this.adaptPos(x));
-        System.out.println("PY" + this.adaptPos(y));
-        arduinoMoteurs.send("PY" + this.adaptPos(y));
-    }
-
-	//Fonction qui envoie l'angle de rotation aux moteurs, plus precisemment des chaines de caractere
-	// avec "PX" ou "PY" avec la chaine de l'angle concatenee (ex : PT+3212)
-    public void setRot(double rot) {
-        System.out.println("PT" + this.adaptRot(rot));
-        arduinoMoteurs.send("PT" + this.adaptRot(rot));	//Mort aux PTs !! (Fafnir -> pour Borrits)
-    }
-
-    public int getDistanceSonar() {
-        return distanceSonar;
-    }
 }

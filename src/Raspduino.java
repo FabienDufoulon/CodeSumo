@@ -19,47 +19,78 @@ public class Raspduino {
 	CarteAsservissement ca;
 
 	public Trajectoire commande;
-
+	public Position p;
+	
+	TypeAsservissement asservType;
+	
 	Timer timer;
 
 	boolean isRunning;
 
 	public Raspduino() throws IOException {
-		ca = new CarteAsservissement("/dev/ttyS80");
+		//ca = new CarteAsservissement("/dev/ttyAMA0");
 
 		/*Panel panel = new Panel(this);
 		new GUI(panel);*/
 		
-		MyThread thread = new MyThread(this){
+		/*MyThread thread = new MyThread(this){
 		};
-
-		timer = new Timer(true);
-
-		isRunning = false;
-
-		TimerTask tt = new TimerTask() {
-			public void run() {
-				if (isRunning) {
-					commande.set_pos(ca.x, ca.y, ca.t);
-					commande.set_speed(ca.v);
+		
+		thread.run();*/
 
 
-					if(commande.endTrajectoire())
-					{
-						ca.stop();
-						stopFollowing();
-					}
-					else
-					{
-						ca.setAsservissementVitesse((float) 0.1,
-							(float) commande.compute_wref());
-						
-						System.out.println("Distance = " + commande.commande.y);
-					}
+		asservType = TypeAsservissement.NULL;
+		
+		while(true)
+		{
+
+			if (this.asservType == TypeAsservissement.ASSERV_TRAJECTOIRE) {
+				commande.set_pos(ca.x, ca.y, ca.t);
+				commande.set_speed(ca.v);
+
+
+				if(commande.endTrajectoire())
+				{
+					ca.stop();
+					stopFollowing();
 				}
-			};
-		};
-		timer.scheduleAtFixedRate(tt, 0, 200);
+				else
+				{
+					float wr = (float) commande.compute_wref();
+					float vr;
+					vr = (float) (0.3 /(1+commande.commande.c0 * 0.35/2.0));
+					
+					ca.setAsservissementVitesse(vr, wr);
+					
+					System.out.println("Distance = " + commande.commande.y);
+				}
+				
+				
+				
+			}
+			else if(this.asservType == TypeAsservissement.ASSRV_POSITION)
+			{
+				float l,t;
+				l = (float) Math.sqrt(Math.pow(ca.x - p.x, 2.0) + Math.pow(ca.y - p.y, 2.0));
+				t = -(float) (ca.t - Math.atan2(p.y - ca.y, p.x - ca.x));
+				
+				if(l<0.01)
+				{
+					ca.stop();
+					this.asservType = TypeAsservissement.NULL;
+					System.out.println("POUEEEEET l = " + l);
+				}
+				else
+					ca.setAsservissementPosition(l, t);
+			}
+			
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 
@@ -83,14 +114,14 @@ public class Raspduino {
 
 		this.stopFollowing();
 
-		isRunning = true;
+		this.asservType = TypeAsservissement.ASSERV_TRAJECTOIRE;
 		
 		System.out.println("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL XD");
 
 	}
 
 	public void stopFollowing() {
-		isRunning = false;
+		this.asservType = TypeAsservissement.NULL;
 	} 
 
 	/**
@@ -146,24 +177,24 @@ class MyThread implements Runnable {
 				this.rasp.ca.reset();
 				break;
 			case 'T': //T
-				rasp.followBezier();
+				this.rasp.followBezier();
 				break;
 
 			case 'P': //P
-				rasp.commande.commande.KP += 5;
+				this.rasp.commande.commande.KP += 5;
 				System.out.println("----------------------------------------- KP = " + rasp.commande.commande.KP);
 				break;
 			case 'M': //M
-				rasp.commande.commande.KP -= 5;
+				this.rasp.commande.commande.KP -= 5;
 				System.out.println("----------------------------------------- KP = " + rasp.commande.commande.KP);
 				break;
 
 			case 'O': //O
-				rasp.commande.commande.KV += 5;
+				this.rasp.commande.commande.KV += 5;
 				System.out.println("----------------------------------------- KV = " + rasp.commande.commande.KV);
 				break;
 			case 'K': //K
-				rasp.commande.commande.KV -= 5;
+				this.rasp.commande.commande.KV -= 5;
 				System.out.println("----------------------------------------- KV = " + rasp.commande.commande.KV);
 				break;
 			}

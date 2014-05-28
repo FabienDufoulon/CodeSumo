@@ -24,10 +24,7 @@ public class TableDeJeu {
 	
 	//taille de la table :
 	int tableWidth = 3000, tableHeight = 2000;
-    
-    private int posXInit, posYInit; //point en haut ﾃ�droite
-    
-    private int a;
+   
     
     private int nbPoints;
     private Vertex[] point = new Vertex[151*101];
@@ -35,15 +32,8 @@ public class TableDeJeu {
     private List<Point> obstacles = new ArrayList();
     private List<Polygon> polygons = new ArrayList();
     
-    public TableDeJeu(String sens)
+    public TableDeJeu()
     {
-        a = 1;
-        if(sens == "gauche") 
-            a = -1;
-        
-        posXInit = 62; //62
-        posYInit = 250;  //250
-        
     }
     
     public static double distancePoints(Vertex p1,Vertex p2){
@@ -53,7 +43,7 @@ public class TableDeJeu {
     //////////////
     //initialisation
     //////////////
-    public Vertex init() {
+    public void init() {
         // === Initialisation de la table ===
         // == Points ==
         
@@ -77,8 +67,6 @@ public class TableDeJeu {
         initObstacles();
 
 	System.out.println("Obstacles init done!");
-
-        return point[0];
     }
     
     public void initEdges() {
@@ -317,11 +305,7 @@ public class TableDeJeu {
         
         return path;
     } 
-    
-    public void recadrage(double angle, double ddistance) {
-        posXInit = posXInit - (int)(ddistance*Math.cos(Math.toRadians(angle)));
-        posYInit = posYInit - (int)(ddistance*Math.sin(Math.toRadians(angle)));
-    }
+   
     
     public void setBlocked(Vertex i, Vertex f)
     {
@@ -351,16 +335,6 @@ public class TableDeJeu {
     
     public List<Point> getObstacles(){
     	return obstacles;
-    }
-    
-    public int getXInit()
-    {
-        return posXInit;
-    }
-    
-    public int getYInit()
-    {
-        return posYInit;
     }
     
     //Fonction qui convertit un List<Vertex> en List<Point> pour envoyer à la partie
@@ -435,7 +409,7 @@ public class TableDeJeu {
     
     public static void main(String[] args)
     {
-        TableDeJeu tableDeJeu = new TableDeJeu("droite");
+        TableDeJeu tableDeJeu = new TableDeJeu();
         tableDeJeu.init();
         //System.out.println(tableDeJeu.getIndex(100,120));
         //List<Point> pl = tableDeJeu.getTest2(534);

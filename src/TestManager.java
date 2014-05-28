@@ -4,10 +4,11 @@ import java.io.IOException;
 public class TestManager {
     public static void main(String[] args) throws IOException
     {
-        TableDeJeu tableDeJeu = new TableDeJeu("droite");
+        TableDeJeu tableDeJeu = new TableDeJeu();
         System.out.println("In process");
         tableDeJeu.init();
         System.out.println("done !");
+        
         //tableDeJeu.test();
         
         //new Fenetre(tableDeJeu);
